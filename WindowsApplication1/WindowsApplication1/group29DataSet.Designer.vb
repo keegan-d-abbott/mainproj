@@ -77,6 +77,8 @@ Partial Public Class group29DataSet
     
     Private relationFK_ReservationTable_TimeSlot As Global.System.Data.DataRelation
     
+    Private relationFK_OrderTBL_Reservation As Global.System.Data.DataRelation
+    
     Private _schemaSerializationMode As Global.System.Data.SchemaSerializationMode = Global.System.Data.SchemaSerializationMode.IncludeSchema
     
     <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
@@ -500,6 +502,7 @@ Partial Public Class group29DataSet
         Me.relationFK_ReservationTable_Reservation = Me.Relations("FK_ReservationTable_Reservation")
         Me.relationFK_ReservationTable_Table = Me.Relations("FK_ReservationTable_Table")
         Me.relationFK_ReservationTable_TimeSlot = Me.Relations("FK_ReservationTable_TimeSlot")
+        Me.relationFK_OrderTBL_Reservation = Me.Relations("FK_OrderTBL_Reservation")
     End Sub
     
     <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
@@ -562,6 +565,8 @@ Partial Public Class group29DataSet
         Me.Relations.Add(Me.relationFK_ReservationTable_Table)
         Me.relationFK_ReservationTable_TimeSlot = New Global.System.Data.DataRelation("FK_ReservationTable_TimeSlot", New Global.System.Data.DataColumn() {Me.tableTimeSlot.Time_Slot_NoColumn}, New Global.System.Data.DataColumn() {Me.tableReservationTable.Time_Slot_NoColumn}, false)
         Me.Relations.Add(Me.relationFK_ReservationTable_TimeSlot)
+        Me.relationFK_OrderTBL_Reservation = New Global.System.Data.DataRelation("FK_OrderTBL_Reservation", New Global.System.Data.DataColumn() {Me.tableReservation.Reservation_NoColumn}, New Global.System.Data.DataColumn() {Me.tableOrderTBL.Reservation_NoColumn}, false)
+        Me.Relations.Add(Me.relationFK_OrderTBL_Reservation)
     End Sub
     
     <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
@@ -2678,11 +2683,14 @@ Partial Public Class group29DataSet
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")>  _
-        Public Overloads Function AddOrderTBLRow(ByVal parentCustomerRowByFK_Order_Customer As CustomerRow, ByVal Reservation_No As Integer, ByVal parentWaiterRowByFK_Order_Waiter As WaiterRow, ByVal Order_Start_Time As System.TimeSpan, ByVal Order_End_Time As System.TimeSpan, ByVal Order_Status As String, ByVal Order_Total As Double, ByVal Order_Total_Paid As Double, ByVal parentTableTBLRowByFK_OrderTBL_TableTBL As TableTBLRow) As OrderTBLRow
+        Public Overloads Function AddOrderTBLRow(ByVal parentCustomerRowByFK_Order_Customer As CustomerRow, ByVal parentReservationRowByFK_OrderTBL_Reservation As ReservationRow, ByVal parentWaiterRowByFK_Order_Waiter As WaiterRow, ByVal Order_Start_Time As System.TimeSpan, ByVal Order_End_Time As System.TimeSpan, ByVal Order_Status As String, ByVal Order_Total As Double, ByVal Order_Total_Paid As Double, ByVal parentTableTBLRowByFK_OrderTBL_TableTBL As TableTBLRow) As OrderTBLRow
             Dim rowOrderTBLRow As OrderTBLRow = CType(Me.NewRow,OrderTBLRow)
-            Dim columnValuesArray() As Object = New Object() {Nothing, Nothing, Reservation_No, Nothing, Order_Start_Time, Order_End_Time, Order_Status, Order_Total, Order_Total_Paid, Nothing}
+            Dim columnValuesArray() As Object = New Object() {Nothing, Nothing, Nothing, Nothing, Order_Start_Time, Order_End_Time, Order_Status, Order_Total, Order_Total_Paid, Nothing}
             If (Not (parentCustomerRowByFK_Order_Customer) Is Nothing) Then
                 columnValuesArray(1) = parentCustomerRowByFK_Order_Customer(0)
+            End If
+            If (Not (parentReservationRowByFK_OrderTBL_Reservation) Is Nothing) Then
+                columnValuesArray(2) = parentReservationRowByFK_OrderTBL_Reservation(0)
             End If
             If (Not (parentWaiterRowByFK_Order_Waiter) Is Nothing) Then
                 columnValuesArray(3) = parentWaiterRowByFK_Order_Waiter(0)
@@ -6006,6 +6014,17 @@ Partial Public Class group29DataSet
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")>  _
+        Public Property ReservationRow() As ReservationRow
+            Get
+                Return CType(Me.GetParentRow(Me.Table.ParentRelations("FK_OrderTBL_Reservation")),ReservationRow)
+            End Get
+            Set
+                Me.SetParentRow(value, Me.Table.ParentRelations("FK_OrderTBL_Reservation"))
+            End Set
+        End Property
+        
+        <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")>  _
         Public Function IsCustomer_IDNull() As Boolean
             Return Me.IsNull(Me.tableOrderTBL.Customer_IDColumn)
         End Function
@@ -6389,6 +6408,16 @@ Partial Public Class group29DataSet
                 Return New ReservationTableRow(-1) {}
             Else
                 Return CType(MyBase.GetChildRows(Me.Table.ChildRelations("FK_ReservationTable_Reservation")),ReservationTableRow())
+            End If
+        End Function
+        
+        <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")>  _
+        Public Function GetOrderTBLRows() As OrderTBLRow()
+            If (Me.Table.ChildRelations("FK_OrderTBL_Reservation") Is Nothing) Then
+                Return New OrderTBLRow(-1) {}
+            Else
+                Return CType(MyBase.GetChildRows(Me.Table.ChildRelations("FK_OrderTBL_Reservation")),OrderTBLRow())
             End If
         End Function
     End Class
@@ -13252,21 +13281,30 @@ Namespace group29DataSetTableAdapters
                     allChangedRows.AddRange(updatedRows)
                 End If
             End If
-            If (Not (Me._tableTBLTableAdapter) Is Nothing) Then
-                Dim updatedRows() As Global.System.Data.DataRow = dataSet.TableTBL.Select(Nothing, Nothing, Global.System.Data.DataViewRowState.ModifiedCurrent)
-                updatedRows = Me.GetRealUpdatedRows(updatedRows, allAddedRows)
-                If ((Not (updatedRows) Is Nothing)  _
-                            AndAlso (0 < updatedRows.Length)) Then
-                    result = (result + Me._tableTBLTableAdapter.Update(updatedRows))
-                    allChangedRows.AddRange(updatedRows)
-                End If
-            End If
             If (Not (Me._timeSlotTableAdapter) Is Nothing) Then
                 Dim updatedRows() As Global.System.Data.DataRow = dataSet.TimeSlot.Select(Nothing, Nothing, Global.System.Data.DataViewRowState.ModifiedCurrent)
                 updatedRows = Me.GetRealUpdatedRows(updatedRows, allAddedRows)
                 If ((Not (updatedRows) Is Nothing)  _
                             AndAlso (0 < updatedRows.Length)) Then
                     result = (result + Me._timeSlotTableAdapter.Update(updatedRows))
+                    allChangedRows.AddRange(updatedRows)
+                End If
+            End If
+            If (Not (Me._reservationTableAdapter) Is Nothing) Then
+                Dim updatedRows() As Global.System.Data.DataRow = dataSet.Reservation.Select(Nothing, Nothing, Global.System.Data.DataViewRowState.ModifiedCurrent)
+                updatedRows = Me.GetRealUpdatedRows(updatedRows, allAddedRows)
+                If ((Not (updatedRows) Is Nothing)  _
+                            AndAlso (0 < updatedRows.Length)) Then
+                    result = (result + Me._reservationTableAdapter.Update(updatedRows))
+                    allChangedRows.AddRange(updatedRows)
+                End If
+            End If
+            If (Not (Me._tableTBLTableAdapter) Is Nothing) Then
+                Dim updatedRows() As Global.System.Data.DataRow = dataSet.TableTBL.Select(Nothing, Nothing, Global.System.Data.DataViewRowState.ModifiedCurrent)
+                updatedRows = Me.GetRealUpdatedRows(updatedRows, allAddedRows)
+                If ((Not (updatedRows) Is Nothing)  _
+                            AndAlso (0 < updatedRows.Length)) Then
+                    result = (result + Me._tableTBLTableAdapter.Update(updatedRows))
                     allChangedRows.AddRange(updatedRows)
                 End If
             End If
@@ -13303,15 +13341,6 @@ Namespace group29DataSetTableAdapters
                 If ((Not (updatedRows) Is Nothing)  _
                             AndAlso (0 < updatedRows.Length)) Then
                     result = (result + Me._orderTBLTableAdapter.Update(updatedRows))
-                    allChangedRows.AddRange(updatedRows)
-                End If
-            End If
-            If (Not (Me._reservationTableAdapter) Is Nothing) Then
-                Dim updatedRows() As Global.System.Data.DataRow = dataSet.Reservation.Select(Nothing, Nothing, Global.System.Data.DataViewRowState.ModifiedCurrent)
-                updatedRows = Me.GetRealUpdatedRows(updatedRows, allAddedRows)
-                If ((Not (updatedRows) Is Nothing)  _
-                            AndAlso (0 < updatedRows.Length)) Then
-                    result = (result + Me._reservationTableAdapter.Update(updatedRows))
                     allChangedRows.AddRange(updatedRows)
                 End If
             End If
@@ -13369,19 +13398,27 @@ Namespace group29DataSetTableAdapters
                     allAddedRows.AddRange(addedRows)
                 End If
             End If
-            If (Not (Me._tableTBLTableAdapter) Is Nothing) Then
-                Dim addedRows() As Global.System.Data.DataRow = dataSet.TableTBL.Select(Nothing, Nothing, Global.System.Data.DataViewRowState.Added)
-                If ((Not (addedRows) Is Nothing)  _
-                            AndAlso (0 < addedRows.Length)) Then
-                    result = (result + Me._tableTBLTableAdapter.Update(addedRows))
-                    allAddedRows.AddRange(addedRows)
-                End If
-            End If
             If (Not (Me._timeSlotTableAdapter) Is Nothing) Then
                 Dim addedRows() As Global.System.Data.DataRow = dataSet.TimeSlot.Select(Nothing, Nothing, Global.System.Data.DataViewRowState.Added)
                 If ((Not (addedRows) Is Nothing)  _
                             AndAlso (0 < addedRows.Length)) Then
                     result = (result + Me._timeSlotTableAdapter.Update(addedRows))
+                    allAddedRows.AddRange(addedRows)
+                End If
+            End If
+            If (Not (Me._reservationTableAdapter) Is Nothing) Then
+                Dim addedRows() As Global.System.Data.DataRow = dataSet.Reservation.Select(Nothing, Nothing, Global.System.Data.DataViewRowState.Added)
+                If ((Not (addedRows) Is Nothing)  _
+                            AndAlso (0 < addedRows.Length)) Then
+                    result = (result + Me._reservationTableAdapter.Update(addedRows))
+                    allAddedRows.AddRange(addedRows)
+                End If
+            End If
+            If (Not (Me._tableTBLTableAdapter) Is Nothing) Then
+                Dim addedRows() As Global.System.Data.DataRow = dataSet.TableTBL.Select(Nothing, Nothing, Global.System.Data.DataViewRowState.Added)
+                If ((Not (addedRows) Is Nothing)  _
+                            AndAlso (0 < addedRows.Length)) Then
+                    result = (result + Me._tableTBLTableAdapter.Update(addedRows))
                     allAddedRows.AddRange(addedRows)
                 End If
             End If
@@ -13414,14 +13451,6 @@ Namespace group29DataSetTableAdapters
                 If ((Not (addedRows) Is Nothing)  _
                             AndAlso (0 < addedRows.Length)) Then
                     result = (result + Me._orderTBLTableAdapter.Update(addedRows))
-                    allAddedRows.AddRange(addedRows)
-                End If
-            End If
-            If (Not (Me._reservationTableAdapter) Is Nothing) Then
-                Dim addedRows() As Global.System.Data.DataRow = dataSet.Reservation.Select(Nothing, Nothing, Global.System.Data.DataViewRowState.Added)
-                If ((Not (addedRows) Is Nothing)  _
-                            AndAlso (0 < addedRows.Length)) Then
-                    result = (result + Me._reservationTableAdapter.Update(addedRows))
                     allAddedRows.AddRange(addedRows)
                 End If
             End If
@@ -13499,14 +13528,6 @@ Namespace group29DataSetTableAdapters
                     allChangedRows.AddRange(deletedRows)
                 End If
             End If
-            If (Not (Me._reservationTableAdapter) Is Nothing) Then
-                Dim deletedRows() As Global.System.Data.DataRow = dataSet.Reservation.Select(Nothing, Nothing, Global.System.Data.DataViewRowState.Deleted)
-                If ((Not (deletedRows) Is Nothing)  _
-                            AndAlso (0 < deletedRows.Length)) Then
-                    result = (result + Me._reservationTableAdapter.Update(deletedRows))
-                    allChangedRows.AddRange(deletedRows)
-                End If
-            End If
             If (Not (Me._orderTBLTableAdapter) Is Nothing) Then
                 Dim deletedRows() As Global.System.Data.DataRow = dataSet.OrderTBL.Select(Nothing, Nothing, Global.System.Data.DataViewRowState.Deleted)
                 If ((Not (deletedRows) Is Nothing)  _
@@ -13539,19 +13560,27 @@ Namespace group29DataSetTableAdapters
                     allChangedRows.AddRange(deletedRows)
                 End If
             End If
-            If (Not (Me._timeSlotTableAdapter) Is Nothing) Then
-                Dim deletedRows() As Global.System.Data.DataRow = dataSet.TimeSlot.Select(Nothing, Nothing, Global.System.Data.DataViewRowState.Deleted)
-                If ((Not (deletedRows) Is Nothing)  _
-                            AndAlso (0 < deletedRows.Length)) Then
-                    result = (result + Me._timeSlotTableAdapter.Update(deletedRows))
-                    allChangedRows.AddRange(deletedRows)
-                End If
-            End If
             If (Not (Me._tableTBLTableAdapter) Is Nothing) Then
                 Dim deletedRows() As Global.System.Data.DataRow = dataSet.TableTBL.Select(Nothing, Nothing, Global.System.Data.DataViewRowState.Deleted)
                 If ((Not (deletedRows) Is Nothing)  _
                             AndAlso (0 < deletedRows.Length)) Then
                     result = (result + Me._tableTBLTableAdapter.Update(deletedRows))
+                    allChangedRows.AddRange(deletedRows)
+                End If
+            End If
+            If (Not (Me._reservationTableAdapter) Is Nothing) Then
+                Dim deletedRows() As Global.System.Data.DataRow = dataSet.Reservation.Select(Nothing, Nothing, Global.System.Data.DataViewRowState.Deleted)
+                If ((Not (deletedRows) Is Nothing)  _
+                            AndAlso (0 < deletedRows.Length)) Then
+                    result = (result + Me._reservationTableAdapter.Update(deletedRows))
+                    allChangedRows.AddRange(deletedRows)
+                End If
+            End If
+            If (Not (Me._timeSlotTableAdapter) Is Nothing) Then
+                Dim deletedRows() As Global.System.Data.DataRow = dataSet.TimeSlot.Select(Nothing, Nothing, Global.System.Data.DataViewRowState.Deleted)
+                If ((Not (deletedRows) Is Nothing)  _
+                            AndAlso (0 < deletedRows.Length)) Then
+                    result = (result + Me._timeSlotTableAdapter.Update(deletedRows))
                     allChangedRows.AddRange(deletedRows)
                 End If
             End If

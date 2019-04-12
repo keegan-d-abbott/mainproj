@@ -1,4 +1,4 @@
-﻿Public Class Form6
+﻿Public Class Order
     Private Sub OrderLineBindingNavigatorSaveItem_Click(sender As Object, e As EventArgs) Handles OrderLineBindingNavigatorSaveItem.Click
         Me.Validate()
         Me.OrderLineBindingSource.EndEdit()
